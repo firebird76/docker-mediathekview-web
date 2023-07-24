@@ -1,7 +1,3 @@
-[![Docker Image Build Status](https://img.shields.io/github/workflow/status/conrad784/docker-mediathekview-webinterface/Publish%20Docker%20image?label=docker%20build)](https://hub.docker.com/r/conrad784/mediathekview-webinterface)
-[![GitHub-Issues](https://img.shields.io/github/issues/conrad784/docker-mediathekview-webinterface)](https://github.com/conrad784/docker-mediathekview-webinterface/issues)
-[![GitHub-Releases](https://img.shields.io/github/tag/conrad784/docker-mediathekview-webinterface.svg)](https://github.com/conrad784/docker-mediathekview-webinterface/releases)
-[![Docker Pulls](https://img.shields.io/docker/pulls/conrad784/mediathekview-webinterface)](https://hub.docker.com/r/conrad784/mediathekview-webinterface)
 
 # docker-mediathekview
 X11rdp Version of Mediathekview
