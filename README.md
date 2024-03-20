@@ -1,7 +1,8 @@
+[![Docker](https://github.com/firebird76/docker-mediathekview-web/actions/workflows/docker-publish2.yml/badge.svg)](https://github.com/firebird76/docker-mediathekview-web/actions/workflows/docker-publish2.yml)
 
 # docker-mediathekview
-[![Docker](https://github.com/firebird76/docker-mediathekview-web/actions/workflows/docker-publish2.yml/badge.svg)](https://github.com/firebird76/docker-mediathekview-web/actions/workflows/docker-publish2.yml)
 X11rdp Version of Mediathekview
+
 ## About
 Using this container allows you to run Mediathekview as a service and control it via webbrowser like Firefox or Chrome.
 The X11rdp feature is inherited from [https://github.com/jlesage/docker-baseimage-gui](https://github.com/jlesage/docker-baseimage-gui).
@@ -17,11 +18,11 @@ The X11rdp feature is inherited from [https://github.com/jlesage/docker-baseimag
 The Github repository is automatically build by Github Actions.
 You can pull it from Docker Hub:
 ```
-docker pull conrad784/mediathekview-webinterface:latest
+docker pull firebird76/docker-mediathekview-web:latest
 ```
 Some older versions can also be acquired by using e.g.
 ```
-docker pull conrad784/mediathekview-webinterface:13.3.0-3
+docker pull firebird76/docker-mediathekview-web:13.3.0-3
 ```
 
 ## Running it
