@@ -1,5 +1,6 @@
 
 # docker-mediathekview
+[![Docker](https://github.com/firebird76/docker-mediathekview-web/actions/workflows/docker-publish2.yml/badge.svg)](https://github.com/firebird76/docker-mediathekview-web/actions/workflows/docker-publish2.yml)
 X11rdp Version of Mediathekview
 ## About
 Using this container allows you to run Mediathekview as a service and control it via webbrowser like Firefox or Chrome.
