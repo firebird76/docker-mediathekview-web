@@ -39,9 +39,9 @@ RUN wget -q ${MEDIATHEKVIEW_URL} -O MediathekView.tar.gz
 RUN tar xf MediathekView.tar.gz -C /opt
 
 # Maximize only the main/initial window.
-RUN \
-    sed-patch 's/<application type="normal">/<application type="normal" title="Mediathekview">/' \
-        /etc/xdg/openbox/rc.xml
+#RUN \
+#    sed-patch 's/<application type="normal">/<application type="normal" title="Mediathekview">/' \
+#        /etc/xdg/openbox/rc.xml
 
 COPY src/startapp.sh /startapp.sh
 
