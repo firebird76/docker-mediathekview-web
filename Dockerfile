@@ -39,7 +39,7 @@ RUN wget --no-verbose https://download.mediathekview.de/stabil/MediathekView-lat
 COPY src/startapp.sh /startapp.sh
 
 # clear temporary build directory
-RUN rm /tmp/*
+#RUN rm /tmp/*
 
 # Set environment variables.
 ENV APP_NAME="Mediathekview" \
