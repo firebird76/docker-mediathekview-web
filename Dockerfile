@@ -28,21 +28,13 @@ RUN \
         wget \
         vlc \
         flvstreamer \
-        ffmpeg
+        ffmpeg \
+        mediathekview
 
-
+RUN wget --no-verbose https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb && \
+    apt-get install -y ./MediathekView-latest-linux.deb && \
+    rm -rf ./MediathekView-latest-linux.deb
 # Define software download URLs.
-ARG MEDIATHEKVIEW_URL=https://download.mediathekview.de/stabil/MediathekView-$MEDIATHEK_VERSION-linux.tar.gz
-
-# download Mediathekview
-RUN mkdir -p /opt/MediathekView
-RUN wget -q ${MEDIATHEKVIEW_URL} -O MediathekView.tar.gz
-RUN tar xf MediathekView.tar.gz -C /opt
-
-# Maximize only the main/initial window.
-#RUN \
-#    sed-patch 's/<application type="normal">/<application type="normal" title="Mediathekview">/' \
-#        /etc/xdg/openbox/rc.xml
 
 COPY src/startapp.sh /startapp.sh
 
