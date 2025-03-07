@@ -1,7 +1,6 @@
 # Pull base image.
 #FROM jlesage/baseimage-gui:debian-12
-#FROM jlesage/baseimage-gui:debian-12-v4
-FROM jlesage/baseimage-gui:ubuntu-24.04-v4.7.1
+FROM jlesage/baseimage-gui:debian-12-v4
 ENV USER_ID=0 GROUP_ID=0 TERM=xterm
 ENV DISPLAY_WIDTH=1920
 ENV DISPLAY_HEIGHT=1080
@@ -28,18 +27,26 @@ RUN \
         wget \
         vlc \
         flvstreamer \
-        ffmpeg \
-        mediathekview
+        ffmpeg
 
-RUN wget --no-verbose https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb && \
-    apt-get install -y ./MediathekView-latest-linux.deb && \
-    rm -rf ./MediathekView-latest-linux.deb
+
 # Define software download URLs.
+ARG MEDIATHEKVIEW_URL=https://download.mediathekview.de/stabil/MediathekView-$MEDIATHEK_VERSION-linux.tar.gz
+
+# download Mediathekview
+RUN mkdir -p /opt/MediathekView
+RUN wget -q ${MEDIATHEKVIEW_URL} -O MediathekView.tar.gz
+RUN tar xf MediathekView.tar.gz -C /opt
+
+# Maximize only the main/initial window.
+#RUN \
+#    sed-patch 's/<application type="normal">/<application type="normal" title="Mediathekview">/' \
+#        /etc/xdg/openbox/rc.xml
 
 COPY src/startapp.sh /startapp.sh
 
 # clear temporary build directory
-#RUN rm /tmp/*
+RUN rm /tmp/*
 
 # Set environment variables.
 ENV APP_NAME="Mediathekview" \
