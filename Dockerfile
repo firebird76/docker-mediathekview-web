@@ -1,6 +1,7 @@
 # Pull base image.
 #FROM jlesage/baseimage-gui:debian-12
-FROM jlesage/baseimage-gui:debian-12-v4
+#FROM jlesage/baseimage-gui:debian-12-v4
+FROM jlesage/baseimage-gui:ubuntu-24.04-v4.7.1
 ENV USER_ID=0 GROUP_ID=0 TERM=xterm
 ENV DISPLAY_WIDTH=1920
 ENV DISPLAY_HEIGHT=1080
