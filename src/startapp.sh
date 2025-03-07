@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env sh
+
 export HOME=/config
 
-/opt/MediathekView/MediathekView -m $HOME
+exec /usr/local/bin/MediathekView
