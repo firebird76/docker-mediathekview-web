@@ -1,14 +1,19 @@
-version: '3'
-
+version: "3"
 services:
   mediathekview:
+    image: ghcr.io/firebird76/docker-mediathekview-web:main
     build: .
     container_name: mediathekview
-    ports:
-      - "5800:5800"
-    volumes:
-      - "$HOME/.mediathek3:/config:rw"
-      - "$HOME/MediathekView:/output:rw"
+    restart: on-failure
     environment:
-       - "USER_ID=1000"
-       - "GROUP_ID=1000"
+      - TZ=Europe/Berlin
+      - KEEP_APP_RUNNING=1
+      - USER_ID=0
+      - GROUP_ID=0
+    volumes:
+      - ./config:/config:rw
+      - ./root:/root:rw  # needed to keep settings permanent
+      - ./output:/output:rw
+    ports:
+      - 5900:5900 # access via VNC
+      - 5800:5800 # access via webbrowser
