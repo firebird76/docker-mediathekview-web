@@ -1,4 +1,4 @@
-FROM jlesage/baseimage-gui:ubuntu-22.04-v4.10.5
+FROM jlesage/baseimage-gui:ubuntu-22.04-v4.10.6
 
 ENV APP_NAME="MediathekView"
 ENV DISPLAY=:0
