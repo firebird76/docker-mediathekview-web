@@ -22,7 +22,7 @@ docker pull firebird76/docker-mediathekview-web:latest
 ```
 Some older versions can also be acquired by using e.g.
 ```
-docker pull firebird76/docker-mediathekview-web:13.3.0-3
+docker pull firebird76/docker-mediathekview-web:1.1.0
 ```
 
 ## Running it
@@ -32,7 +32,7 @@ For basic usage, just use
 docker run -it -p 127.0.0.1:5800:5800 --rm \
     -v $HOME/.mediathek3:/config:rw \
     -v <path to your media files>:/output:rw \
-    conrad784/mediathekview-webinterface:latest
+    firebird76/mediathekview-webinterface:latest
 ```
 
 ## Developing
