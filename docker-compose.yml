@@ -14,6 +14,8 @@ services:
       - ./config:/config:rw
       - ./root:/root:rw  # needed to keep settings permanent
       - ./output:/output:rw
+    devices:
+      - /dev/dri:/dev/dri
     ports:
       - 5900:5900 # access via VNC
       - 5800:5800 # access via webbrowser
