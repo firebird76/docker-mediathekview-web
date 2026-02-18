@@ -11,6 +11,7 @@ RUN apt-get update && \
     apt-get full-upgrade -y && \
     apt-get install -y ffmpeg wget mediathekview
 
+
 # Install MediathekView
 RUN wget --no-verbose https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb && \
     apt-get install -y ./MediathekView-latest-linux.deb && \
