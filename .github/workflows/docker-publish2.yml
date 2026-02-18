@@ -7,10 +7,9 @@ name: Docker
 
 on:
   schedule:
-    - cron: '17 20 * * *'
+    - cron: '2 20 * * *'
   push:
-    branches: [ "main" ]
-    # Publish semver tags as releases.
+    branches: [ "**" ]
     tags: [ 'v*.*.*' ]
   pull_request:
     branches: [ "main" ]
@@ -68,7 +67,14 @@ jobs:
         uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
+          tags: |
+            # 'latest' nur für den Hauptbranch
+            type=edge,branch=main
+            # Branch-Name als Tag für Test-Branches
+            type=ref,event=branch
+            # Semantische Versionierung für Tags (v1.0.0 etc.)
+            type=semver,pattern={{version}}
+          
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image
