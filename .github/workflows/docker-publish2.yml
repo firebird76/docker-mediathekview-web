@@ -70,6 +70,7 @@ jobs:
           tags: |
             # 'latest' nur für den Hauptbranch
             type=edge,branch=main
+            type=raw,value=dev,enable=${{ github.ref != 'refs/heads/main' }}
             # Branch-Name als Tag für Test-Branches
             type=ref,event=branch
             # Semantische Versionierung für Tags (v1.0.0 etc.)
