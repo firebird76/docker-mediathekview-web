@@ -1,6 +1,7 @@
 FROM jlesage/baseimage-gui:debian-13-v4.11.3
 ENV APP_NAME="MediathekView"
 ENV DISPLAY=:0
+LABEL MediathekVersion="14.5.0" 
 
 # Generate and install favicons
 RUN \
