@@ -1,7 +1,8 @@
 FROM jlesage/baseimage-gui:debian-13-v4.11.3
 ENV APP_NAME="MediathekView"
 ENV DISPLAY=:0
-LABEL MediathekVersion="14.5.0" 
+ARG MV_VERSION="14.5.0"
+LABEL MediathekVersion=$MV_VERSION
 
 # Generate and install favicons
 RUN \
@@ -21,13 +22,13 @@ ENV LANGUAGE en_US.UTF-8
 ENV LANG en_US.UTF-8    
     
     
-# Install MediathekView -latest 
-RUN wget --no-verbose https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb && \
+# Install MediathekView  
+RUN echo "Building version: $MV_VERSION" && \
+    wget --no-verbose https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb && \
     apt-get install -y ./MediathekView-latest-linux.deb && \
-    rm -rf ./MediathekView-latest-linux.deb
-
-# Cleanup
-RUN apt-get -y autoclean
+    rm -f ./MediathekView-latest-linux.deb && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV APP_NAME="Mediathekview" \
     S6_KILL_GRACETIME=8000
