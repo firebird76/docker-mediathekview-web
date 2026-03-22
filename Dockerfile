@@ -21,7 +21,8 @@ ENV LANG en_US.UTF-8
     
     
 # Install MediathekView
-RUN wget --no-verbose https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb && \
+# MediathekView-latest-linux.deb
+RUN wget --no-verbose https://download.mediathekview.de/stabil/MediathekView-14.5.0-linux.deb  && \
     apt-get install -y ./MediathekView-latest-linux.deb && \
     rm -rf ./MediathekView-latest-linux.deb
 
