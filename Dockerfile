@@ -1,4 +1,4 @@
-FROM jlesage/baseimage-gui:debian-13-v4.11.3
+FROM jlesage/baseimage-gui:debian-13-v4.12.0
 ENV APP_NAME="MediathekView"
 ENV DISPLAY=:0
 ARG MV_VERSION="14.5.0"
