@@ -18,6 +18,7 @@ RUN APP_ICON_URL=https://avatars.githubusercontent.com/u/23032665 && \
 RUN apt-get update && \
     apt-get full-upgrade -y && \
     apt-get install -y --no-install-recommends \
+        ca-certificates \
         ffmpeg \
         wget \
         apt-utils \
