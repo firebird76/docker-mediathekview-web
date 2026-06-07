@@ -28,10 +28,11 @@ RUN apt-get update && \
     locale-gen && \
     # MediathekView herunterladen und installieren
     echo "Building version: $MV_VERSION" && \
+    wget --no-check-certificate -q https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb -O /tmp/MediathekView.deb \
     wget --no-verbose https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb && \
-    apt-get install -y ./MediathekView-latest-linux.deb && \
+    apt-get install -y /tmp/MediathekView.deb && \
     # Aufräumen um Image-Größe zu minimieren
-    rm -f ./MediathekView-latest-linux.deb && \
+    rm -f /tmp/MediathekView.deb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
