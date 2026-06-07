@@ -1,41 +1,44 @@
 FROM jlesage/baseimage-gui:debian-13-v4.11.3
-ENV APP_NAME="MediathekView"
-ENV DISPLAY=:0
+
 ARG MV_VERSION="14.5.0"
 LABEL MediathekVersion=$MV_VERSION
 
-# Generate and install favicons
-RUN \
-    APP_ICON_URL=https://avatars.githubusercontent.com/u/23032665 && \
+ENV APP_NAME="MediathekView" \
+    DISPLAY=:0 \
+    S6_KILL_GRACETIME=8000 \
+    LC_ALL=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8 \
+    LANG=en_US.UTF-8
+
+# 1. Icons generieren und installieren
+RUN APP_ICON_URL=https://avatars.githubusercontent.com/u/23032665 && \
     install_app_icon.sh "$APP_ICON_URL"
 
+# 2. System-Updates, Locales und Abhängigkeiten in EINEM Rutsch installieren
 RUN apt-get update && \
     apt-get full-upgrade -y && \
-    apt-get install -y ffmpeg wget mediathekview
-
-RUN apt-get install -y apt-utils locales \
-    && echo en_US.UTF-8 UTF-8 > /etc/locale.gen \
-    && locale-gen    
-
-ENV LC_ALL=en_US.UTF-8
-ENV LANGUAGE=en_US.UTF-8
-ENV LANG=en_US.UTF-8    
-    
-    
-# Install MediathekView  
-RUN echo "Building version: $MV_VERSION" && \
+    apt-get install -y --no-install-recommends \
+        ffmpeg \
+        wget \
+        apt-utils \
+        locales && \
+    # Locales generieren
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen && \
+    # MediathekView herunterladen und installieren
+    echo "Building version: $MV_VERSION" && \
     wget --no-verbose https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb && \
     apt-get install -y ./MediathekView-latest-linux.deb && \
+    # Aufräumen um Image-Größe zu minimieren
     rm -f ./MediathekView-latest-linux.deb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-    
-ENV APP_NAME="Mediathekview" \
-    S6_KILL_GRACETIME=8000
 
+# Volumes definieren
 VOLUME ["/config"]
 VOLUME ["/output"]    
     
-# Copy startapp.sh and make it executable
+# Start-Skript kopieren und Rechte setzen
 COPY rootfs/ /
 RUN chmod +x /startapp.sh
+
