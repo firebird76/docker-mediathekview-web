@@ -37,6 +37,7 @@ jobs:
             type=ref,event=branch,prefix=dev-
             type=ref,event=pr,prefix=dev-pr-,suffix=-{{branch}}
             type=sha,prefix=dev-
+            type=raw,value=dev                          # → dev (einfaches Tag)
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3  # Aktualisiert auf v3
