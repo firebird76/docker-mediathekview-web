@@ -11,7 +11,7 @@ while true; do
    
     # Sollte 'mediathekview' nicht gefunden werden, kannst du es durch 
     # den exakten Pfad (z.B. /usr/bin/mediathekview) ersetzen.
-    mediathekview -dq
+    /usr/local/bin/MediathekView -dq
     
     echo "--------------------------------------------------"
     echo "Downloads abgeschlossen. MediathekView beendet."
