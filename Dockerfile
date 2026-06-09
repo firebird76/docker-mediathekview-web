@@ -2,7 +2,7 @@ FROM jlesage/baseimage-gui:debian-13-v4.11.3
 
 ARG MV_VERSION="14.5.0"
 LABEL MediathekVersion=$MV_VERSION
-
+ENV JAVA_OPTS="-Djava.awt.headless=false -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true"
 ENV APP_NAME="MediathekView" \
     DISPLAY=:0 \
     S6_KILL_GRACETIME=8000 \
@@ -22,7 +22,13 @@ RUN apt-get update && \
         ffmpeg \
         wget \
         apt-utils \
-        locales && \
+        locales \
+        # Java Runtime Environment für MediathekView
+        default-jre \
+        # X11-Fonts für bessere GUI-Darstellung
+        xfonts-base \
+        xfonts-75dpi && \
+    
     # Locales generieren
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen && \
