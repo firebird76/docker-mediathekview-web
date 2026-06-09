@@ -27,18 +27,16 @@ jobs:
         if: github.event_name == 'push' && github.ref != 'refs/heads/main'
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login $REGISTRY -u ${{ github.actor }} --password-stdin
-
       - name: Extract metadata für dev-Tags
         id: meta
-        uses: docker/metadata-action@v6  # Aktualisiert auf v5
+        uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
+        tags: |
+            type=raw,value=dev
             type=ref,event=branch,prefix=dev-
             type=ref,event=pr,prefix=dev-pr-,suffix=-{{branch}}
             type=sha,prefix=dev-
-            type=sha,prefix=dev
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4  # Aktualisiert auf v3
 
