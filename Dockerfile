@@ -14,7 +14,7 @@ ENV APP_NAME="MediathekView" \
 RUN APP_ICON_URL=https://avatars.githubusercontent.com/u/23032665 && \
     install_app_icon.sh "$APP_ICON_URL"
 
-# 2. System-Updates, Locales und Abhängigkeiten in EINEM Rutsch installieren
+# 2. System-Updates, Locales und Abhängigkeiten installieren (robust)
 RUN apt-get update && \
     apt-get full-upgrade -y && \
     apt-get install -y --no-install-recommends \
@@ -23,24 +23,30 @@ RUN apt-get update && \
         wget \
         apt-utils \
         locales \
-        # Installiere OpenJDK 17 (oder neuer)
-        openjdk-17-jre \
+        # Installiere OpenJDK 17 (Fallback zu OpenJDK 21)
+        openjdk-17-jre || openjdk-21-jre && \
         # X11-Fonts für bessere GUI-Darstellung
         xfonts-base \
         xfonts-75dpi && \
-    
     # Locales generieren
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen && \
-    # MediathekView herunterladen und installieren
+    # MediathekView herunterladen (mit Fallback-URL und Timeout)
     echo "Building version: $MV_VERSION" && \
-    wget --no-check-certificate -q https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb -O /tmp/MediathekView.deb && \
-    apt-get install -y /tmp/MediathekView.deb && \
+    wget --no-check-certificate -q --timeout=30 --tries=3 \
+        https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb -O /tmp/MediathekView.deb || \
+    wget --no-check-certificate -q --timeout=30 --tries=3 \
+        https://mediathekview.de/download/MediathekView-latest-linux.deb -O /tmp/MediathekView.deb && \
+    apt-get install -y --fix-missing --allow-downgrades /tmp/MediathekView.deb && \
     # Aufräumen um Image-Größe zu minimieren
     rm -f /tmp/MediathekView.deb && \
+    apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# 3. Java-Version explizit prüfen (Fehlerdiagnose)
+RUN java -version && \
+    echo "JAVA_HOME: $JAVA_HOME"
 # Volumes definieren
 VOLUME ["/config"]
 VOLUME ["/output"]    
