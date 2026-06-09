@@ -27,7 +27,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         xfonts-base \
         xfonts-75dpi \
-        openjdk-17-jre || openjdk-21-jre
+        openjdk-21-jre
 
 # 3. Locales generieren
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
