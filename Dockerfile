@@ -2,6 +2,7 @@ FROM jlesage/baseimage-gui:debian-13-v4.11.3
 
 ARG MV_VERSION="14.5.0"
 LABEL MediathekVersion=$MV_VERSION
+
 ENV JAVA_OPTS="-Djava.awt.headless=false -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true"
 ENV APP_NAME="MediathekView" \
     DISPLAY=:0 \
@@ -10,11 +11,11 @@ ENV APP_NAME="MediathekView" \
     LANGUAGE=en_US.UTF-8 \
     LANG=en_US.UTF-8
 
-# 1. Icons generieren und installieren
+# 1. Icons generieren
 RUN APP_ICON_URL=https://avatars.githubusercontent.com/u/23032665 && \
     install_app_icon.sh "$APP_ICON_URL"
 
-# 2. System-Updates, Locales und Abhängigkeiten installieren (robust)
+# 2. System-Updates und Abhängigkeiten installieren (korrigiert!)
 RUN apt-get update && \
     apt-get full-upgrade -y && \
     apt-get install -y --no-install-recommends \
@@ -22,36 +23,39 @@ RUN apt-get update && \
         ffmpeg \
         wget \
         apt-utils \
-        locales \
-        # Installiere OpenJDK 17 (Fallback zu OpenJDK 21)
-        openjdk-17-jre || openjdk-21-jre && \
-        # X11-Fonts für bessere GUI-Darstellung
+        locales && \
+    apt-get install -y --no-install-recommends \
         xfonts-base \
-        xfonts-75dpi && \
-    # Locales generieren
-    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
-    locale-gen && \
-    # MediathekView herunterladen (mit Fallback-URL und Timeout)
-    echo "Building version: $MV_VERSION" && \
+        xfonts-75dpi \
+        openjdk-17-jre || openjdk-21-jre
+
+# 3. Locales generieren
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen
+
+# 4. MediathekView herunterladen und installieren (mit Fallback)
+RUN echo "Building version: $MV_VERSION" && \
     wget --no-check-certificate -q --timeout=30 --tries=3 \
         https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb -O /tmp/MediathekView.deb || \
     wget --no-check-certificate -q --timeout=30 --tries=3 \
         https://mediathekview.de/download/MediathekView-latest-linux.deb -O /tmp/MediathekView.deb && \
     apt-get install -y --fix-missing --allow-downgrades /tmp/MediathekView.deb && \
-    # Aufräumen um Image-Größe zu minimieren
-    rm -f /tmp/MediathekView.deb && \
-    apt-get autoremove -y && \
+    rm -f /tmp/MediathekView.deb
+
+# 5. Aufräumen
+RUN apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# 3. Java-Version explizit prüfen (Fehlerdiagnose)
-RUN java -version && \
-    echo "JAVA_HOME: $JAVA_HOME"
+# 6. Java-Version prüfen
+RUN java -version
+
 # Volumes definieren
 VOLUME ["/config"]
-VOLUME ["/output"]    
-    
+VOLUME ["/output"]
+
 # Start-Skript kopieren und Rechte setzen
 COPY rootfs/ /
 RUN chmod +x /startapp.sh
 
+CMD ["/startapp.sh"]
