@@ -1,41 +1,61 @@
 FROM jlesage/baseimage-gui:debian-13-v4.11.3
-ENV APP_NAME="MediathekView"
-ENV DISPLAY=:0
+
 ARG MV_VERSION="14.5.0"
 LABEL MediathekVersion=$MV_VERSION
 
-# Generate and install favicons
-RUN \
-    APP_ICON_URL=https://avatars.githubusercontent.com/u/23032665 && \
+ENV JAVA_OPTS="-Djava.awt.headless=false -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true"
+ENV APP_NAME="MediathekView" \
+    DISPLAY=:0 \
+    S6_KILL_GRACETIME=8000 \
+    LC_ALL=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8 \
+    LANG=en_US.UTF-8
+
+# 1. Icons generieren
+RUN APP_ICON_URL=https://avatars.githubusercontent.com/u/23032665 && \
     install_app_icon.sh "$APP_ICON_URL"
 
+# 2. System-Updates und Abhängigkeiten installieren (korrigiert!)
 RUN apt-get update && \
     apt-get full-upgrade -y && \
-    apt-get install -y ffmpeg wget mediathekview
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        ffmpeg \
+        wget \
+        apt-utils \
+        locales && \
+    apt-get install -y --no-install-recommends \
+        xfonts-base \
+        xfonts-75dpi \
+        openjdk-21-jre-headless
 
-RUN apt-get install -y apt-utils locales \
-    && echo en_US.UTF-8 UTF-8 > /etc/locale.gen \
-    && locale-gen    
+# 3. Locales generieren
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen
 
-ENV LC_ALL=en_US.UTF-8
-ENV LANGUAGE=en_US.UTF-8
-ENV LANG=en_US.UTF-8    
-    
-    
-# Install MediathekView  
+# 4. MediathekView herunterladen und installieren (mit Fallback)
 RUN echo "Building version: $MV_VERSION" && \
-    wget --no-verbose https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb && \
-    apt-get install -y ./MediathekView-latest-linux.deb && \
-    rm -f ./MediathekView-latest-linux.deb && \
+    wget --no-check-certificate -q --timeout=30 --tries=3 \
+        https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb -O /tmp/MediathekView.deb || \
+    wget --no-check-certificate -q --timeout=30 --tries=3 \
+        https://mediathekview.de/download/MediathekView-latest-linux.deb -O /tmp/MediathekView.deb && \
+    apt-get install -y --fix-missing --allow-downgrades /tmp/MediathekView.deb && \
+    rm -f /tmp/MediathekView.deb
+
+# 5. Aufräumen
+RUN apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-    
-ENV APP_NAME="Mediathekview" \
-    S6_KILL_GRACETIME=8000
 
+# 6. Java-Version prüfen
+RUN java -version
+
+# Volumes definieren
 VOLUME ["/config"]
-VOLUME ["/output"]    
-    
-# Copy startapp.sh and make it executable
+VOLUME ["/output"]
+
+# Start-Skript kopieren und Rechte setzen
 COPY rootfs/ /
 RUN chmod +x /startapp.sh
+
+CMD ["/startapp.sh"]
