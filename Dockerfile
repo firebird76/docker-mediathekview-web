@@ -23,8 +23,8 @@ RUN apt-get update && \
         wget \
         apt-utils \
         locales \
-        # Java Runtime Environment für MediathekView
-        default-jre \
+        # Installiere OpenJDK 17 (oder neuer)
+        openjdk-17-jre \
         # X11-Fonts für bessere GUI-Darstellung
         xfonts-base \
         xfonts-75dpi && \
