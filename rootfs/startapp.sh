@@ -1,5 +1,5 @@
-#!/usr/bin/env sh
-
+#!/bin/sh
 export HOME=/config
 
-exec /usr/local/bin/MediathekView
+export JAVA_OPTS="-Djava.awt.headless=false -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true"
+exec java $JAVA_OPTS -jar /opt/MediathekView/MediathekView.jar
