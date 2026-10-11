@@ -1,41 +1,35 @@
 FROM jlesage/baseimage-gui:debian-13-v4.14.0
-ENV APP_NAME="MediathekView"
-ENV DISPLAY=:0
+
+ENV APP_NAME="MediathekView" \
+    DISPLAY=:0 \
+    S6_KILL_GRACETIME=8000
+
 ARG MV_VERSION="15.0.0"
 LABEL MediathekVersion=$MV_VERSION
 
-# Generate and install favicons
-RUN \
-    APP_ICON_URL=https://avatars.githubusercontent.com/u/23032665 && \
+RUN APP_ICON_URL=https://avatars.githubusercontent.com/u/23032665 && \
     install_app_icon.sh "$APP_ICON_URL"
 
-RUN apt-get update && \
-    apt-get full-upgrade -y && \
-    apt-get install -y ffmpeg wget mediathekview
+# Systempakete und Locale installieren
+RUN add-pkg ffmpeg wget locales && \
+    sed-patch 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    locale-gen
 
-RUN apt-get install -y apt-utils locales \
-    && echo en_US.UTF-8 UTF-8 > /etc/locale.gen \
-    && locale-gen    
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
 
-ENV LC_ALL=en_US.UTF-8
-ENV LANGUAGE=en_US.UTF-8
-ENV LANG=en_US.UTF-8    
-    
-    
-# Install MediathekView  
-RUN echo "Building version: $MV_VERSION" && \
-    wget --no-verbose https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb && \
-    apt-get install -y ./MediathekView-latest-linux.deb && \
-    rm -f ./MediathekView-latest-linux.deb && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-    
-ENV APP_NAME="Mediathekview" \
-    S6_KILL_GRACETIME=8000
+RUN add-pkg ca-certificates libxtst6 && \
+    update-ca-certificates
 
-VOLUME ["/config"]
-VOLUME ["/output"]    
-    
-# Copy startapp.sh and make it executable
+
+# MediathekView installieren
+RUN wget --no-verbose -O /tmp/MediathekView.deb \
+      https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb && \
+    apt-get install -y /tmp/MediathekView.deb && \
+    rm -f /tmp/MediathekView.deb
+
+VOLUME ["/config", "/output"]
+
 COPY rootfs/ /
 RUN chmod +x /startapp.sh
