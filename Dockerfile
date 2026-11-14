@@ -11,7 +11,7 @@ RUN APP_ICON_URL=https://avatars.githubusercontent.com/u/23032665 && \
     install_app_icon.sh "$APP_ICON_URL"
 
 # Systempakete und Locale installieren
-RUN add-pkg ffmpeg wget locales && \
+RUN add-pkg ffmpeg wget locales vlc && \
     sed-patch 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     locale-gen
 
@@ -21,7 +21,6 @@ ENV LANG=en_US.UTF-8 \
 
 RUN add-pkg ca-certificates libxtst6 && \
     update-ca-certificates
-
 
 # MediathekView installieren
 RUN wget --no-verbose -O /tmp/MediathekView.deb \
